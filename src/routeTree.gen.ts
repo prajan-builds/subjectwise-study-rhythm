@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as FocusRouteImport } from './routes/focus'
+import { Route as PlannerRouteImport } from './routes/planner'
+import { Route as RevisionRouteImport } from './routes/revision'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SyllabusRouteImport } from './routes/syllabus'
+import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as TimetableRouteImport } from './routes/timetable'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FocusRoute = FocusRouteImport.update({
+  id: '/focus',
+  path: '/focus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlannerRoute = PlannerRouteImport.update({
+  id: '/planner',
+  path: '/planner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RevisionRoute = RevisionRouteImport.update({
+  id: '/revision',
+  path: '/revision',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SyllabusRoute = SyllabusRouteImport.update({
+  id: '/syllabus',
+  path: '/syllabus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TasksRoute = TasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TimetableRoute = TimetableRouteImport.update({
+  id: '/timetable',
+  path: '/timetable',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/focus': typeof FocusRoute
+  '/planner': typeof PlannerRoute
+  '/revision': typeof RevisionRoute
+  '/settings': typeof SettingsRoute
+  '/syllabus': typeof SyllabusRoute
+  '/tasks': typeof TasksRoute
+  '/timetable': typeof TimetableRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/focus': typeof FocusRoute
+  '/planner': typeof PlannerRoute
+  '/revision': typeof RevisionRoute
+  '/settings': typeof SettingsRoute
+  '/syllabus': typeof SyllabusRoute
+  '/tasks': typeof TasksRoute
+  '/timetable': typeof TimetableRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/focus': typeof FocusRoute
+  '/planner': typeof PlannerRoute
+  '/revision': typeof RevisionRoute
+  '/settings': typeof SettingsRoute
+  '/syllabus': typeof SyllabusRoute
+  '/tasks': typeof TasksRoute
+  '/timetable': typeof TimetableRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/analytics'
+    | '/focus'
+    | '/planner'
+    | '/revision'
+    | '/settings'
+    | '/syllabus'
+    | '/tasks'
+    | '/timetable'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/analytics'
+    | '/focus'
+    | '/planner'
+    | '/revision'
+    | '/settings'
+    | '/syllabus'
+    | '/tasks'
+    | '/timetable'
+  id:
+    | '__root__'
+    | '/'
+    | '/analytics'
+    | '/focus'
+    | '/planner'
+    | '/revision'
+    | '/settings'
+    | '/syllabus'
+    | '/tasks'
+    | '/timetable'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  FocusRoute: typeof FocusRoute
+  PlannerRoute: typeof PlannerRoute
+  RevisionRoute: typeof RevisionRoute
+  SettingsRoute: typeof SettingsRoute
+  SyllabusRoute: typeof SyllabusRoute
+  TasksRoute: typeof TasksRoute
+  TimetableRoute: typeof TimetableRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/focus': {
+      id: '/focus'
+      path: '/focus'
+      fullPath: '/focus'
+      preLoaderRoute: typeof FocusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/planner': {
+      id: '/planner'
+      path: '/planner'
+      fullPath: '/planner'
+      preLoaderRoute: typeof PlannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/revision': {
+      id: '/revision'
+      path: '/revision'
+      fullPath: '/revision'
+      preLoaderRoute: typeof RevisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/syllabus': {
+      id: '/syllabus'
+      path: '/syllabus'
+      fullPath: '/syllabus'
+      preLoaderRoute: typeof SyllabusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tasks': {
+      id: '/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/timetable': {
+      id: '/timetable'
+      path: '/timetable'
+      fullPath: '/timetable'
+      preLoaderRoute: typeof TimetableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  FocusRoute: FocusRoute,
+  PlannerRoute: PlannerRoute,
+  RevisionRoute: RevisionRoute,
+  SettingsRoute: SettingsRoute,
+  SyllabusRoute: SyllabusRoute,
+  TasksRoute: TasksRoute,
+  TimetableRoute: TimetableRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
