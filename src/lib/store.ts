@@ -39,6 +39,8 @@ export interface AppData {
 }
 
 const KEY = "studyos:v1";
+let workspaceKey = KEY;
+let onWorkspaceChange: (() => void) | null = null;
 
 export function uid(): string {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
@@ -85,16 +87,29 @@ export function progressPct(chapters: Chapter[]): number {
 
 // ---------- Store ----------
 let state: AppData | null = null;
-const serverState = makeDefaultData(false);
+let serverState: AppData | null = null;
+function getServerState() { serverState ??= makeDefaultData(false); return serverState; }
 const listeners = new Set<() => void>();
+
+export function configureWorkspace(userId: string | null, onChange: (() => void) | null) {
+  workspaceKey = userId ? `studyos:user:${userId}` : KEY;
+  onWorkspaceChange = onChange;
+  state = null;
+  listeners.forEach((listener) => listener());
+}
+export function replaceWorkspace(data: AppData) {
+  state = data;
+  persist();
+  listeners.forEach((listener) => listener());
+}
 
 function load(): AppData {
   if (state) return state;
   try {
-    const raw = localStorage.getItem(KEY);
-    state = raw ? migrate(JSON.parse(raw)) : makeDefaultData();
+    const raw = localStorage.getItem(workspaceKey);
+    state = raw ? migrate(JSON.parse(raw)) : makeDefaultData(workspaceKey === KEY);
   } catch {
-    state = makeDefaultData();
+    state = makeDefaultData(workspaceKey === KEY);
   }
   return state;
 }
@@ -103,7 +118,7 @@ export function migrate(d: Partial<AppData>): AppData {
   return { ...base, ...d, settings: { ...base.settings, ...(d.settings ?? {}) }, version: 1 } as AppData;
 }
 function persist() {
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* quota */ }
+  try { localStorage.setItem(workspaceKey, JSON.stringify(state)); } catch { console.error("Device storage unavailable; export a backup before closing this tab."); }
 }
 export function getData(): AppData { return load(); }
 export function setData(fn: (d: AppData) => AppData) {
@@ -114,15 +129,16 @@ export function setData(fn: (d: AppData) => AppData) {
   state = next.chapters.length ? { ...next, progressHistory: [...hist, { date: t, pct }].slice(-365) } : next;
   persist();
   listeners.forEach((l) => l());
+  onWorkspaceChange?.();
 }
 function subscribe(l: () => void) {
   listeners.add(l);
-  const onStorage = (e: StorageEvent) => { if (e.key === KEY) { state = null; l(); } };
+  const onStorage = (e: StorageEvent) => { if (e.key === workspaceKey) { state = null; l(); onWorkspaceChange?.(); } };
   window.addEventListener("storage", onStorage);
   return () => { listeners.delete(l); window.removeEventListener("storage", onStorage); };
 }
 export function useData(): AppData {
-  return useSyncExternalStore(subscribe, load, () => serverState);
+  return useSyncExternalStore(subscribe, load, getServerState);
 }
 
 // ---------- Actions ----------
@@ -179,9 +195,11 @@ export const actions = {
       const i = list.findIndex((x) => x.id === id);
       const j = i + dir;
       if (j < 0 || j >= list.length) return d;
-      [list[i], list[j]] = [list[j]!, list[i]!];
+      const first = list[i]; const second = list[j];
+      if (!first || !second) return d;
+      [list[i], list[j]] = [second, first];
       const orders = new Map(list.map((x, k) => [x.id, k]));
-      return { ...d, chapters: d.chapters.map((x) => (orders.has(x.id) ? { ...x, order: orders.get(x.id)! } : x)) };
+      return { ...d, chapters: d.chapters.map((x) => { const order = orders.get(x.id); return order === undefined ? x : { ...x, order }; }) };
     });
   },
   completeRevision(id: string, nextInDays?: number) {

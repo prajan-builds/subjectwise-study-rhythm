@@ -1,8 +1,10 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { BarChart3, BookOpen, CalendarClock, CalendarDays, CheckSquare, Home, Menu, RotateCcw, Settings, Timer } from "lucide-react";
+import { BarChart3, BookOpen, CalendarClock, CalendarDays, CheckSquare, Home, Menu, Moon, Sun, RotateCcw, Settings, Timer } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { actions, useData } from "@/lib/store";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: Home },
@@ -20,6 +22,11 @@ const MOBILE = ["/", "/tasks", "/syllabus", "/focus"];
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const data = useData();
+  const toggleTheme = () => {
+    const dark = document.documentElement.classList.contains("dark");
+    actions.updateSettings({ theme: dark ? "light" : "dark" });
+  };
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
   return (
@@ -36,10 +43,23 @@ export function AppShell({ children }: { children: ReactNode }) {
             </Link>
           ))}
         </nav>
-        <p className="mt-auto px-2 text-xs text-muted-foreground">Saved on this device</p>
+        <div className="mt-auto grid gap-3 px-2">
+          <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label="Toggle light and dark theme" title="Toggle light and dark theme" className="justify-start">
+            {data.settings.theme === "dark" ? <Sun /> : <Moon />} Appearance
+          </Button>
+          <p className="text-xs text-muted-foreground">Saved on this device</p>
+        </div>
       </aside>
 
-      <main id="main" className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-5 md:px-8 md:pb-10 md:pt-8">{children}</main>
+      <main id="main" className="mx-auto w-full min-w-0 max-w-5xl flex-1 px-4 pb-28 pt-5 md:px-10 md:pb-10 md:pt-10">
+        <div className="mb-6 flex items-center justify-between md:hidden">
+          <Link to="/" className="text-lg font-semibold">StudyOS</Link>
+          <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle light and dark theme" title="Toggle light and dark theme">
+            {data.settings.theme === "dark" ? <Sun /> : <Moon />}
+          </Button>
+        </div>
+        {children}
+      </main>
 
       <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
         {NAV.filter((n) => MOBILE.includes(n.to)).map(({ to, label, icon: Icon }) => (
@@ -47,16 +67,16 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Icon className="size-5" /> {label === "Dashboard" ? "Home" : label}
           </Link>
         ))}
-        <button onClick={() => setOpen(true)} className={cn("flex flex-col items-center gap-0.5 py-2.5 text-[11px] text-muted-foreground", !NAV.some((n) => MOBILE.includes(n.to) && isActive(n.to)) && "font-semibold text-primary")}>
+        <Button variant="ghost" onClick={() => setOpen(true)} className={cn("h-auto flex flex-col items-center gap-0.5 rounded-none py-2.5 text-[11px] text-muted-foreground", !NAV.some((n) => MOBILE.includes(n.to) && isActive(n.to)) && "font-semibold text-primary")}>
           <Menu className="size-5" /> More
-        </button>
+        </Button>
       </nav>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="bottom" className="rounded-t-2xl">
+        <SheetContent side="bottom" className="rounded-t-lg">
           <SheetHeader><SheetTitle>All sections</SheetTitle></SheetHeader>
           <div className="grid grid-cols-3 gap-2 p-4 pt-0">
             {NAV.map(({ to, label, icon: Icon }) => (
-              <Link key={to} to={to} onClick={() => setOpen(false)} className={cn("flex flex-col items-center gap-1.5 rounded-xl border p-3 text-xs", isActive(to) && "border-primary bg-accent font-semibold")}>
+              <Link key={to} to={to} onClick={() => setOpen(false)} className={cn("flex flex-col items-center gap-1.5 rounded-md border p-3 text-xs", isActive(to) && "border-primary bg-accent font-semibold")}>
                 <Icon className="size-5" /> {label}
               </Link>
             ))}

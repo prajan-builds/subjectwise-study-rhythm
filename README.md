@@ -37,3 +37,11 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Portable export
+
+The export contains source code, public assets, configuration, dependency manifests and the Bun lockfile. Installed dependency folders and generated build output are intentionally excluded: install dependencies in the destination environment using `bun install --frozen-lockfile`, then run `bun run dev`. The current template expects a modern Node.js runtime and Bun.
+
+Lovable Cloud is connected, but email/password accounts and cloud data sync are not implemented yet; most module pages remain placeholders. Current study data stays in the browser where it was created and is not included in this source archive. Light/dark appearance can be changed from the visible theme toggle.
+
+The archive includes only public browser configuration in `.env.example`. Copy it to `.env` for local development. Private deployment credentials and authentication sessions are never exported. Features requiring private server credentials must be securely configured in the destination host; the current local-first study features do not require them. This export has not been tested in Replit itself.

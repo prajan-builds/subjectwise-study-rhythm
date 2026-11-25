@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Keep theme selection in the existing study settings store and apply it through Background, so phone and desktop controls share persistence.
+- Use unframed dashboard sections and semantic neutral theme tokens, so compact repeated study items remain visually distinct without nested cards.

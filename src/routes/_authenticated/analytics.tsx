@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Empty, PageHeader } from "@/components/app/common";
 import { pageHead } from "@/lib/meta";
 
-export const Route = createFileRoute("/analytics")({
+export const Route = createFileRoute("/_authenticated/analytics")({
   head: () => pageHead("Analytics", "Analytics in StudyOS."),
   validateSearch: (s: Record<string, unknown>): { s?: string | undefined } => ({ s: typeof s["s"] === "string" ? s["s"] : undefined }),
   component: Page,
